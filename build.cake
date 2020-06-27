@@ -10,8 +10,8 @@ var committerEmail = Argument("email", "pragmaticflow.org@gmail.com");
 var committerPassword = Argument("password", "");
 
 var solution = File("./NBomber.sln");
-var project = File("./src/NBomber/NBomber.fsproj");
-var nbomberVersion = XmlPeek(project, "//Version");
+var nbomberProject = File("./src/NBomber/NBomber.fsproj");
+var nbomberVersion = XmlPeek(nbomberProject, "//Version");
 
 var pluginsDir = Directory($"./.nbomber-plugins/{nbomberVersion}");
 var plugins = new[]
@@ -61,13 +61,7 @@ Task("Build")
     {
         Configuration = configuration,
         ArgumentCustomization = args => args.Append("--no-restore"),
-    });
-
-    DotNetCoreBuild(project, new DotNetCoreBuildSettings()
-    {
-        Configuration = configuration,
-        ArgumentCustomization = args => args.Append("--no-restore")
-    });
+    });    
 });
 
 Task("Test")
@@ -99,7 +93,7 @@ Task("Pack")
         Configuration = configuration
     };
 
-	DotNetCorePack(project, settings);
+	DotNetCorePack(nbomberProject, settings);
 });
 
 Task("BuildPlugins")
