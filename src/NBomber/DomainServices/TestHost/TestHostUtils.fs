@@ -141,6 +141,7 @@ module internal TestHostConsole =
     let displayConnectionPoolProgress (dep: IGlobalDependency, pool: ConnectionPool) =
         match dep.ApplicationType with
         | ApplicationType.Console ->
+            dep.Logger.Information("start open '{ConnectionCount}' connections for connection pool: '{PoolName}'", pool.ConnectionCount, pool.PoolName)
             let pb = dep.ProgressBarEnv.CreateManualProgressBar(pool.ConnectionCount)
             pool.EventStream
             |> Observable.subscribeWithCompletion
@@ -166,21 +167,19 @@ module internal TestHostConsole =
         | _ -> None
 
     let printContextInfo (dep: IGlobalDependency) =
-        dep.Logger.Verbose("NBomberConfig: {0}", sprintf "%A" dep.NBomberConfig)
+        dep.Logger.Verbose("NBomberConfig: {NBomberConfig}", sprintf "%A" dep.NBomberConfig)
 
         if dep.Plugins.IsEmpty then
             dep.Logger.Information("plugins: no plugins were loaded")
         else
             dep.Plugins
-            |> List.map(fun plugin -> plugin.PluginName)
-            |> List.iter(fun plugin -> dep.Logger.Information("plugins: '{0}' loaded", plugin))
+            |> List.iter(fun plugin -> dep.Logger.Information("plugins: '{PluginName}' loaded", plugin.PluginName))
 
         if dep.ReportingSinks.IsEmpty then
             dep.Logger.Information("reporting sinks: no reporting sinks were loaded")
         else
             dep.ReportingSinks
-            |> List.map(fun sink -> sink.SinkName)
-            |> List.iter(fun sink -> dep.Logger.Information("reporting sinks: '{0}' loaded", sink))
+            |> List.iter(fun sink -> dep.Logger.Information("reporting sinks: '{SinkName}' loaded", sink.SinkName))
 
 module internal TestHostScenario =
 
