@@ -21,14 +21,14 @@ namespace CSharp.Examples.Scenarios
 
             var webSocketsPool = ConnectionPoolArgs.Create(
                 name: "webSocketsPool",
-                getConnectionCount: () => concurrentCopies,
                 openConnection: async (number,token) =>
                 {
                     var ws = new ClientWebSocket();
                     await ws.ConnectAsync(new Uri(url), token);
                     return ws;
                 },
-                closeConnection: (connection, token) => connection.CloseAsync(WebSocketCloseStatus.NormalClosure, "", token));
+                closeConnection: (connection, token) => connection.CloseAsync(WebSocketCloseStatus.NormalClosure, "", token),
+                connectionCount: concurrentCopies);
 
             var pingStep = Step.Create("ping", webSocketsPool, async context =>
             {
@@ -57,7 +57,7 @@ namespace CSharp.Examples.Scenarios
             });
 
             var scenario = ScenarioBuilder
-                .CreateScenario("web_socket test", new[] {pingStep, pongStep})
+                .CreateScenario("web_socket test", pingStep, pongStep)
                 .WithoutWarmUp()
                 .WithLoadSimulations(new[]
                 {
@@ -65,8 +65,8 @@ namespace CSharp.Examples.Scenarios
                 });
 
             NBomberRunner
-                .RegisterScenarios(new[] {scenario})
-                .RunInConsole();
+                .RegisterScenarios(scenario)
+                .Run();
 
         }
     }

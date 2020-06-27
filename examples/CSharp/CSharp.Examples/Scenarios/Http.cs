@@ -20,20 +20,20 @@ namespace CSharp.Examples.Scenarios
                     //.WithCheck(response => Task.FromResult(response.IsSuccessStatusCode))
             );
 
-            var scenario = ScenarioBuilder.CreateScenario("test_nbomber", new[] {step})
+            var scenario = ScenarioBuilder.CreateScenario("test_nbomber", step)
                 .WithWarmUpDuration(TimeSpan.FromSeconds(10))
                 .WithLoadSimulations(new[]
                 {
                     Simulation.InjectScenariosPerSec(copiesCount: 100, during: TimeSpan.FromSeconds(30))
                 });
 
-            var pingPluginConfig = PingPluginConfig.Create(new[] {"nbomber.com"});
+            var pingPluginConfig = PingPluginConfig.CreateDefault(new[] {"nbomber.com"});
             var pingPlugin = new PingPlugin(pingPluginConfig);
 
             NBomberRunner
-                .RegisterScenarios(new[] {scenario})
-                .WithPlugins(new[] { pingPlugin })
-                .RunInConsole();
+                .RegisterScenarios(scenario)
+                .WithPlugins(pingPlugin)
+                .Run();
         }
     }
 }

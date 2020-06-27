@@ -27,11 +27,11 @@ namespace CSharp.Examples
                 return Response.Ok();
             });
 
-            var scenario = ScenarioBuilder.CreateScenario("Hello World!", new[] {step});
+            var scenario = ScenarioBuilder.CreateScenario("Hello World!", step);
 
             NBomberRunner
-                .RegisterScenarios(new[] {scenario})
-                .RunInConsole();
+                .RegisterScenarios(scenario)
+                .Run();
         }
 
         public class User

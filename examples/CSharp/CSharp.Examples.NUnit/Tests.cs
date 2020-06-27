@@ -19,7 +19,7 @@ namespace CSharp.Examples.NUnit
                 return Response.Ok(sizeBytes: 1024);
             });
 
-            return ScenarioBuilder.CreateScenario("nunit hello world", new[] { step });
+            return ScenarioBuilder.CreateScenario("nunit hello world", step);
         }
 
         [Test]
@@ -32,7 +32,7 @@ namespace CSharp.Examples.NUnit
                     Simulation.KeepConcurrentScenarios(copiesCount: 1, during: TimeSpan.FromSeconds(2))
                 });
 
-            var nodeStats = NBomberRunner.RegisterScenarios(new[] {scenario}).Run();
+            var nodeStats = NBomberRunner.RegisterScenarios(scenario).Run();
             var stepStats = nodeStats.ScenarioStats.First().StepStats.First();
 
             Assert.IsTrue(stepStats.OkCount > 2, "OkCount > 2");

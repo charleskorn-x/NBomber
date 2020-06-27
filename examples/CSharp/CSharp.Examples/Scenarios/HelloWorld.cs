@@ -30,7 +30,7 @@ namespace CSharp.Examples.Scenarios
             });
 
             var scenario = ScenarioBuilder
-                .CreateScenario("hello_world_scenario", new[] { step1, step2 })
+                .CreateScenario("hello_world_scenario", step1, step2)
                 .WithWarmUpDuration(TimeSpan.FromSeconds(10))
                 .WithLoadSimulations(new []
                 {
@@ -41,8 +41,8 @@ namespace CSharp.Examples.Scenarios
                 });
 
             NBomberRunner
-                .RegisterScenarios(new[] {scenario})
-                .RunInConsole();
+                .RegisterScenarios(scenario)
+                .Run();
         }
     }
 }

@@ -46,7 +46,6 @@ namespace CSharp.Examples.Scenarios
             var webSocketConnectionPool =
                 ConnectionPoolArgs.Create(
                     name: "web_socket_pool",
-                    getConnectionCount: () => 10,
                     openConnection: async (number, token) =>
                     {
                         await Task.Delay(1_000);
@@ -56,7 +55,8 @@ namespace CSharp.Examples.Scenarios
                     {
                         Task.Delay(1_000).Wait();
                         return Task.CompletedTask;
-                    });
+                    },
+                    connectionCount: 10);
 
             var step1 = Step.Create("step_1", webSocketConnectionPool, dataFeed, async context =>
             {
@@ -86,7 +86,7 @@ namespace CSharp.Examples.Scenarios
             });
 
             var scenario = ScenarioBuilder
-                .CreateScenario("hello_world_scenario", new[] { step1, step2 })
+                .CreateScenario("hello_world_scenario", step1, step2)
                 .WithTestInit(TestInit)
                 .WithTestClean(TestClean)
                 .WithWarmUpDuration(TimeSpan.FromSeconds(10))
@@ -100,12 +100,12 @@ namespace CSharp.Examples.Scenarios
                 });
 
             NBomberRunner
-                .RegisterScenarios(new[] {scenario})
-                //.LoadConfigJson("config.json")            // nbomber config for test settings only
-                //.LoadInfraConfigJson("infra_config.json") // infra config for infra settings only
-                //.LoadConfigYaml("config.yaml")            // you can use yaml instead of json (https://github.com/PragmaticFlow/NBomber/blob/dev/tests/NBomber.IntegrationTests/Configuration/test_config.yaml)
-                //.LoadInfraConfigYaml("infra_config.yaml")
-                .RunInConsole();
+                .RegisterScenarios(scenario)
+                //.LoadConfig("config.json")            // nbomber config for test settings only
+                //.LoadInfraConfig("infra_config.json") // infra config for infra settings only
+                //.LoadConfig("config.yaml")            // you can use yaml instead of json (https://github.com/PragmaticFlow/NBomber/blob/dev/tests/NBomber.IntegrationTests/Configuration/test_config.yaml)
+                //.LoadInfraConfig("infra_config.yaml")
+                .Run();
         }
     }
 }

@@ -48,12 +48,12 @@ namespace CSharp.Examples.Scenarios
                 return Response.Ok();
             });
 
-            var scenario = ScenarioBuilder.CreateScenario("test_mongo", new[] { step })
+            var scenario = ScenarioBuilder.CreateScenario("test_mongo", step)
                                           .WithTestInit(initDb);
 
             NBomberRunner
-                .RegisterScenarios(new[] {scenario})
-                .RunInConsole();
+                .RegisterScenarios(scenario)
+                .Run();
         }
     }
 }
